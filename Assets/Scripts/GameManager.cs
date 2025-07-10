@@ -22,8 +22,9 @@ public class GameManager : Scripts.Singleton<GameManager>
         Application.targetFrameRate = 60;
     }
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         var buildings = FindObjectsByType<BaseBuilding>(FindObjectsSortMode.InstanceID).ToList();
 
         foreach (var building in buildings)

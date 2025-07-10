@@ -24,9 +24,6 @@ public class BuildingGridAligner : MonoBehaviour
             return;
 
         float cellSize = 1f;
-        GridManager gridManager = FindObjectOfType<GridManager>();
-        if (gridManager != null)
-            cellSize = gridManager.cellSize;
         Vector2Int size = buildingInstance.buildingData.size;
         transform.localScale = new Vector3(size.x * cellSize, size.y * cellSize, 1f);
 

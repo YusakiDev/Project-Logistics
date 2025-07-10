@@ -236,6 +236,9 @@ public class ProductionBuilding : BaseBuilding
         // Show output stock levels
         DisplayOutputStock(sb);
         
+        // Show transport requests
+        DisplayTransportStatus(sb);
+        
         // Show experimental delivery info
         if (experimental && deliveredProduct != null)
         {
@@ -280,6 +283,29 @@ public class ProductionBuilding : BaseBuilding
             sb.Append("Output: ");
             int have = outputStock.ContainsKey(buildingData.outputProduct) ? outputStock[buildingData.outputProduct] : 0;
             sb.Append($"{buildingData.outputProduct.productName} {have} / {buildingData.outputStorageLimit}");
+            sb.AppendLine();
+        }
+    }
+    
+    private void DisplayTransportStatus(System.Text.StringBuilder sb)
+    {
+        // Count active deliveries for this building
+        int incomingDeliveries = 0;
+        
+        if (TransportManager.Instance != null)
+        {
+            foreach (var delivery in TransportManager.Instance.GetActiveDeliveries())
+            {
+                if (delivery.requester == this)
+                {
+                    incomingDeliveries++;
+                }
+            }
+        }
+        
+        if (incomingDeliveries > 0)
+        {
+            sb.Append($" {incomingDeliveries} truck(s) en route");
             sb.AppendLine();
         }
     }

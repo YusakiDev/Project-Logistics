@@ -10,17 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 47f31b7c8f02656429844ba47e984798, type: 3}
-  m_Name: Chicken Farm
+  m_Name: Cake Factory
   m_EditorClassIdentifier: 
   displayName: Chicken Farm
-  icon: {fileID: 4646649027328027380, guid: 8b455c057f7e309498e2cbf97c5f1cd3, type: 3}
+  icon: {fileID: 8435399821174476837, guid: 4e349fd574e863745916f5497ff1b236, type: 3}
   prefab: {fileID: 0}
   buildCost: 0
-  outputProduct: {fileID: 11400000, guid: 519b13c2c38f6b54899208f0d508faa0, type: 2}
+  outputProduct: {fileID: 11400000, guid: 291259c692c0e88439a0dca33b2c415f, type: 2}
   outputAmount: 1
-  productionTime: 5
-  inputStorageLimit: 10
-  outputStorageLimit: 20
-  inputProducts: []
+  productionTime: 10
+  inputStorageLimit: 30
+  outputStorageLimit: 10
+  inputProducts:
+  - productData: {fileID: 11400000, guid: 519b13c2c38f6b54899208f0d508faa0, type: 2}
+    amount: 2
   size: {x: 2, y: 2}
-  buildingRole: 0
+  buildingRole: 1

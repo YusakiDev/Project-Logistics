@@ -7,7 +7,7 @@ namespace Scripts
     {
         public static T Instance {get; private set;}
 
-        private void Start()
+        protected virtual void Start()
         {
             if (Instance == null)
             {

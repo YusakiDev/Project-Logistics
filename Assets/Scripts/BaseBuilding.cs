@@ -75,6 +75,26 @@ namespace Scripts
         {
             EnsureStockText();
             UpdateStockTextPosition();
+
+            if (buildingData.inputProducts == null) return;
+            foreach (var productData in buildingData.inputProducts)
+            {
+                if (!inputStock.ContainsKey(productData.productData))
+                {
+                    inputStock.Add(productData.productData, 0);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Called whenever the script is loaded or whenever values are changed in the Inspector.
+        /// Ensures that the building's sprite is updated to match the assigned BuildingData.
+        /// This is primarily used for validation during development and debugging.
+        /// </summary>
+        private void OnValidate()
+        {
+            GetComponent<SpriteRenderer>().sprite = buildingData.icon;
         }
 
         /// <summary>

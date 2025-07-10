@@ -7,13 +7,31 @@ namespace Scripts
     public class TransportManager : Singleton<TransportManager>
     {
         private List<TransportRequest> pendingRequests = new();
+        private List<ActiveDelivery> activeDeliveries = new();
+        private float processingTimer = 0f;
+        private float processingInterval = 3f;
+
+        protected override void Start()
+        {
+            base.Start();
+        }
+
         private void FixedUpdate()
         {
-            if (pendingRequests.Count > 0)
+            processingTimer += Time.fixedDeltaTime;
+
+            if (processingTimer >= processingInterval)
             {
-                ProcessPendingRequest(pendingRequests[0]);
-                pendingRequests.RemoveAt(0);
+                processingTimer = 0f;
+
+                if (pendingRequests.Count > 0)
+                {
+                    ProcessPendingRequest(pendingRequests[0]);
+                    pendingRequests.RemoveAt(0);
+                }
             }
+
+            ProcessActiveDelivery(); // Keep this frequent for smooth timers
         }
 
         public void AddRequest(TransportRequest request)
@@ -70,16 +88,45 @@ namespace Scripts
                 building.reservedStock[request.requestingProduct] = amount;
             }
 
-            //timer I guess
-            Pickup(building, request, amount);
+            ActiveDelivery delivery = new ActiveDelivery(DeliveryPhase.Pickup,
+                request, building, request.requestingBuilding,
+                request.requestingProduct, amount);
+            activeDeliveries.Add(delivery);
         }
 
-        void Pickup(BaseBuilding building, TransportRequest request, int amount)
+        void ProcessActiveDelivery()
         {
-            request.requestStatus = RequestStatus.Processing;
+            for (int i = activeDeliveries.Count - 1; i >= 0; i--)
+            {
+                ActiveDelivery delivery = activeDeliveries[i];
+                delivery.timeRemaining -= Time.fixedDeltaTime;
 
-            building.reservedStock[request.requestingProduct] -= amount;
-            //load onto trucks stuff later
+                if (delivery.timeRemaining <= 0)
+                {
+                    if (delivery.deliveryPhase == DeliveryPhase.Pickup)
+                    {
+                        delivery.deliveryPhase = DeliveryPhase.Delivery;
+                        delivery.timeRemaining = 10f;
+                        delivery.originalRequest.requestStatus = RequestStatus.Processing;
+                        delivery.supplier.reservedStock[delivery.productData] -= delivery.amount;
+                    }
+                    else if (delivery.deliveryPhase == DeliveryPhase.Delivery)
+                    {
+                        CompleteDelivery(delivery);
+                        activeDeliveries.RemoveAt(i);
+                    }
+                }
+
+
+            }
+        }
+
+
+        void CompleteDelivery(ActiveDelivery delivery)
+        {
+            delivery.requester.inputStock[delivery.productData] += delivery.amount;
+            delivery.originalRequest.requestStatus = RequestStatus.Delivered;
+            Debug.Log("Delivery Completed");
         }
 
         private (BaseBuilding supplier, int availableAmount) FindSupplier(ProductData requestingProduct)
@@ -110,6 +157,9 @@ namespace Scripts
 
         }
 
-
+        public List<ActiveDelivery> GetActiveDeliveries()
+        {
+            return activeDeliveries;
+        }
     }
 }
