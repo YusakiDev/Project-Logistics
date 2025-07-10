@@ -13,6 +13,10 @@ public class BuildingType : ScriptableObject
     public int outputAmount = 1;              // How much per cycle
     public float productionTime = 5f;         // Seconds per cycle
 
+    public int inputStorageLimit;
+
+    public int outputStorageLimit;
+
     public InputProduct[] inputProducts;       // What is required (can be empty)
 
     public Vector2Int size = Vector2Int.one; // Default 1x1

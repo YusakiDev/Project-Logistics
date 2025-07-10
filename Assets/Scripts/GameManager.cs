@@ -18,6 +18,12 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        Screen.orientation = ScreenOrientation.AutoRotation;
+        Screen.autorotateToLandscapeLeft = true;
+        Screen.autorotateToLandscapeRight = true;
+        Screen.autorotateToPortrait = false;
+        Screen.autorotateToPortraitUpsideDown = false;
+        Application.targetFrameRate = 60;
     }
 }
 

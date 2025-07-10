@@ -2,20 +2,24 @@ using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 
 public class BuildingInstance : MonoBehaviour
 {
     [Header("Set this after instantiation!")]
     public BuildingType buildingType;
-    public TextMeshPro stockText; // Assign in Inspector or via code
+    public TextMeshPro stockText3D; // Will be auto-instantiated if null
+    public TextMeshPro stockText3DPrefab; // Assign a prefab in Inspector
+    public float textYOffset = 0.5f;  // Extra offset above the building for the stock text
 
     // Per-instance state
     private float productionTimer = 0f;
+
     public Dictionary<ProductType, int> inputStock = new();
+
     public Dictionary<ProductType, int> outputStock = new();
 
     public bool experimental;
-
 
     // Delivery logic
     [ShowIf("experimental")]
@@ -27,43 +31,72 @@ public class BuildingInstance : MonoBehaviour
 
     private bool isProducing = false;
 
-    void OnValidate()
+    void Start()
     {
-        SpriteRenderer icon = GetComponent<SpriteRenderer>();
-        icon.sprite = buildingType.icon;
+        EnsureStockText();
+    }
+
+    void EnsureStockText()
+    {
+        if (stockText3D == null && stockText3DPrefab != null)
+        {
+            stockText3D = Instantiate(stockText3DPrefab);
+            stockText3D.transform.SetParent(null); // Not a child, so not stretched
+        }
     }
 
     void Update()
     {
-        if (buildingType == null) return;
-
-        if (!isProducing && CanProduce())
+        EnsureStockText();
+        if (Application.isPlaying)
         {
-            // Consume input immediately when production starts
-            foreach (var input in buildingType.inputProducts)
+            // Runtime logic here (production, delivery, etc.)
+            if (buildingType == null) return;
+
+            if (!isProducing && CanProduce())
             {
-                inputStock[input.productType] -= input.amount;
+                // Consume input immediately when production starts
+                foreach (var input in buildingType.inputProducts)
+                {
+                    inputStock[input.productType] -= input.amount;
+                }
+                isProducing = true;
+                productionTimer = 0f; // Reset timer to 0
             }
-            isProducing = true;
-            productionTimer = 0f; // Reset timer to 0
+
+            if (isProducing)
+            {
+                productionTimer += Time.deltaTime;
+                if (productionTimer >= buildingType.productionTime)
+                {
+                    Produce();
+                    productionTimer = 0f;
+                    isProducing = false; // Reset production flag
+                }
+            }
+            HandleDeliveryArrival();
+            UpdateStockText();
         }
 
-        if (isProducing)
+        // Always update stock text position (edit and play mode)
+        if (stockText3D != null && buildingType != null)
         {
-            productionTimer += Time.deltaTime;
-            if (productionTimer >= buildingType.productionTime)
-            {
-                Produce();
-                productionTimer = 0f;
-                isProducing = false; // Reset production flag
-            }
+            float cellSize = 1f;
+            GridManager gridManager = FindObjectOfType<GridManager>();
+            if (gridManager != null)
+                cellSize = gridManager.cellSize;
+            float buildingHeight = buildingType.size.y * cellSize;
+            stockText3D.transform.position = transform.position + new Vector3(0, buildingHeight / 2f + textYOffset, 0);
         }
-        HandleDeliveryArrival();
-        UpdateStockText();
     }
 
     void HandleDeliveryArrival()
     {
+        inputStock.TryGetValue(deliveredProduct, out int currentInputStock);
+        if (currentInputStock >= buildingType.inputStorageLimit/buildingType.inputProducts.Length)
+        {
+            return;
+        }
         if (deliveredProduct == null) return;
         deliveryTimer += Time.deltaTime;
         if (deliveryTimer >= deliveryInterval)
@@ -76,13 +109,17 @@ public class BuildingInstance : MonoBehaviour
     // Check if building has enough input to produce
     bool CanProduce()
     {
+        outputStock.TryGetValue(buildingType.outputProduct, out int currentOutputStock);
+        if (currentOutputStock >= buildingType.outputStorageLimit)
+            return false;
+
         if (buildingType.inputProducts == null || buildingType.inputProducts.Length == 0)
             return true; // No input required (e.g., farm)
         foreach (var input in buildingType.inputProducts)
         {
             if (input.productType == null) // <-- Add this check
                 return false;
-            if (!inputStock.TryGetValue(input.productType, out int have) || have < input.amount)
+            if (!inputStock.TryGetValue(input.productType,out int currentInputStock) || currentInputStock < input.amount)
                 return false;
         }
         return true;
@@ -104,7 +141,7 @@ public class BuildingInstance : MonoBehaviour
     // Update the stock text display
     void UpdateStockText()
     {
-        if (stockText == null) return;
+        if (stockText3D == null) return;
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
         if (GameManager.Instance.debugMode){
             sb.Append($"Time: {productionTimer:F2} / {buildingType.productionTime}");
@@ -117,7 +154,7 @@ public class BuildingInstance : MonoBehaviour
             {
                 var prod = buildingType.inputProducts[i];
                 int have = inputStock.ContainsKey(prod.productType) ? inputStock[prod.productType] : 0;
-                sb.Append($"{prod.productType.productName} {have}");
+                sb.Append($"{prod.productType.productName} {have} / {buildingType.inputStorageLimit/buildingType.inputProducts.Length}");
                 if (i < buildingType.inputProducts.Length - 1) sb.Append(", ");
             }
             sb.AppendLine();
@@ -126,14 +163,14 @@ public class BuildingInstance : MonoBehaviour
         {
             sb.Append("Output: ");
             int have = outputStock.ContainsKey(buildingType.outputProduct) ? outputStock[buildingType.outputProduct] : 0;
-            sb.Append($"{buildingType.outputProduct.productName} {have}");
+            sb.Append($"{buildingType.outputProduct.productName} {have} / {buildingType.outputStorageLimit}");
             sb.AppendLine();
         }
         if (deliveredProduct != null)
         {
             sb.Append($"Next delivery in: {deliveryInterval - deliveryTimer:F2}s");
         }
-        stockText.text = sb.ToString();
+        stockText3D.text = sb.ToString();
     }
 
     public void AddInputStock(ProductType product, int amount)

@@ -14,8 +14,8 @@ public class GridSnap : MonoBehaviour
         if (!Application.isPlaying)
         {
             Vector3 pos = transform.position;
-            pos.x = Mathf.Round(pos.x / cellSize) * cellSize + cellSize / 2f;
-            pos.y = Mathf.Round(pos.y / cellSize) * cellSize + cellSize / 2f;
+            pos.x = Mathf.Round(pos.x / cellSize) * cellSize;
+            pos.y = Mathf.Round(pos.y / cellSize) * cellSize;
             pos.z = 0;
             transform.position = pos;
         }
