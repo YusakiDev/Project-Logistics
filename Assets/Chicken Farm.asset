@@ -19,6 +19,8 @@ MonoBehaviour:
   outputProduct: {fileID: 11400000, guid: 519b13c2c38f6b54899208f0d508faa0, type: 2}
   outputAmount: 1
   productionTime: 5
+  inputStorageLimit: 10
+  outputStorageLimit: 10
   inputProducts:
   - productType: {fileID: 11400000, guid: 291259c692c0e88439a0dca33b2c415f, type: 2}
     amount: 1

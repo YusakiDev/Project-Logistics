@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "FarmLogistics/BuildingType")]
-public class BuildingType : ScriptableObject
+[CreateAssetMenu(menuName = "FarmLogistics/BuildingData")]
+public class BuildingData : ScriptableObject
 {
     public string displayName;
     public Sprite icon;
@@ -9,7 +9,7 @@ public class BuildingType : ScriptableObject
     public int buildCost;
 
     // Production logic
-    public ProductType outputProduct;         // What this building produces
+    public ProductData outputProduct;         // What this building produces
     public int outputAmount = 1;              // How much per cycle
     public float productionTime = 5f;         // Seconds per cycle
 
@@ -22,10 +22,17 @@ public class BuildingType : ScriptableObject
     public Vector2Int size = Vector2Int.one; // Default 1x1
 } 
 
+public enum BuildingRole
+{
+    Producer,    // Farms (no input)
+    Factory,     // Factory (Require Input)
+    Store,       // Customer-facing stores
+}
+
 [System.Serializable]
 public struct InputProduct{
 
-    public ProductType productType;
+    public ProductData productData;
     public int amount;
 
 }

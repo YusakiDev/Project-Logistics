@@ -22,11 +22,18 @@ This is a Unity-based logistics/farming simulation game called "Project Logistic
   - Production recipes (input/output products, production time)
   - Visual properties (prefab, icon, size)
   - Economic properties (build cost)
-- **BuildingInstance.cs**: Runtime component managing individual building behavior:
+  - Storage capacity limits (inputStorageLimit, outputStorageLimit)
+- **BaseBuilding.cs**: Abstract base class for all buildings:
+  - Shared stock management (inputStock, outputStock dictionaries)
+  - 3D text display system
+  - Common building behavior and lifecycle
+- **ProductionBuilding.cs**: Handles factories and farms:
   - Production timers and state machine
-  - Input/output stock management
-  - 3D text display for debugging stock levels
-  - Experimental delivery system
+  - Capacity-aware production logic
+  - Input consumption and output generation
+- **Store.cs**: Handles customer-facing buildings:
+  - Direct-to-shelf stock management
+  - Future: customer interaction and transport requests
 - **BuildingGridAligner.cs**: Handles automatic grid snapping and building scaling in editor
 
 ### Product System
@@ -79,3 +86,15 @@ This is a standard Unity project. Common development tasks:
 - Building instances auto-create 3D text displays for stock information
 - Project supports both editor mouse input and mobile touch controls
 - Many components use ExecuteAlways attribute for editor-time functionality
+
+## Development Logging
+
+**IMPORTANT:** Automatically update the current day's DevLog file in `Game Design/DevLog/YYYY-MM-DD.md` whenever:
+- Implementing new features or systems
+- Making architectural decisions
+- Learning new concepts or patterns
+- Solving problems or fixing bugs
+- Making design changes
+- Completing significant milestones
+
+This ensures a complete development history for learning and reference.

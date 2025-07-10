@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [ExecuteAlways]
-[RequireComponent(typeof(BuildingInstance))]
+[RequireComponent(typeof(ProductionBuilding))]
 public class BuildingGridAligner : MonoBehaviour
 {
     private Vector3 lastSnappedPosition;
@@ -19,15 +19,15 @@ public class BuildingGridAligner : MonoBehaviour
 
     private void SnapAndOffsetToGrid()
     {
-        var buildingInstance = GetComponent<BuildingInstance>();
-        if (buildingInstance == null || buildingInstance.buildingType == null)
+        var buildingInstance = GetComponent<ProductionBuilding>();
+        if (buildingInstance == null || buildingInstance.buildingData == null)
             return;
 
         float cellSize = 1f;
         GridManager gridManager = FindObjectOfType<GridManager>();
         if (gridManager != null)
             cellSize = gridManager.cellSize;
-        Vector2Int size = buildingInstance.buildingType.size;
+        Vector2Int size = buildingInstance.buildingData.size;
         transform.localScale = new Vector3(size.x * cellSize, size.y * cellSize, 1f);
 
         // Snap to bottom-left of grid
