@@ -20,6 +20,7 @@ public class BuildingData : ScriptableObject
     public InputProduct[] inputProducts;       // What is required (can be empty)
 
     public Vector2Int size = Vector2Int.one; // Default 1x1
+    public BuildingRole buildingRole;
 } 
 
 public enum BuildingRole

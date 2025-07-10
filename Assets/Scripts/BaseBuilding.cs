@@ -50,10 +50,9 @@ namespace Scripts
         public Dictionary<ProductData, int> outputStock = new();
 
         /// <summary>
-        /// Stores the last recorded position of the building in the game world.
-        /// Used to detect changes in position and update related elements such as the stock display text.
+        ///
         /// </summary>
-        private Vector3 lastPosition;
+        public Dictionary<ProductData, int> reservedStock = new();
 
         /// <summary>
         /// Event triggered when products are delivered to the building.
@@ -61,6 +60,14 @@ namespace Scripts
         /// </summary>
         public Action<ProductData, int> OnProductDelivered;
 
+        #endregion
+
+        #region BackendProcess
+        /// <summary>
+        /// Stores the last recorded position of the building in the game world.
+        /// Used to detect changes in position and update related elements such as the stock display text.
+        /// </summary>
+        private Vector3 lastPosition;
         #endregion
 
         #region Unity Lifecycle

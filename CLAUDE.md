@@ -98,3 +98,8 @@ This is a standard Unity project. Common development tasks:
 - Completing significant milestones
 
 This ensures a complete development history for learning and reference.
+
+## Development Log Considerations
+
+- Only log in devlog when a feature is finished or the day's work is called off
+- Avoid excessive logging to prevent unnecessary token consumption
