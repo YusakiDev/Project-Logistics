@@ -22,6 +22,6 @@ MonoBehaviour:
   inputStorageLimit: 10
   outputStorageLimit: 10
   inputProducts:
-  - productType: {fileID: 11400000, guid: 291259c692c0e88439a0dca33b2c415f, type: 2}
+  - productData: {fileID: 11400000, guid: 291259c692c0e88439a0dca33b2c415f, type: 2}
     amount: 1
   size: {x: 2, y: 2}

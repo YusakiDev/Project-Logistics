@@ -10,12 +10,15 @@ public class BuildingRequestComponent : MonoBehaviour
     public float customCheckInterval = 7f;
     public float stockThreshold = 0.25f;
 
+    Dictionary<ProductData, int> deliveringProducts = new();
+
     private float checkTimer = 0f;
     private BaseBuilding baseBuilding;
 
     private void Start()
     {
         baseBuilding = GetComponent<BaseBuilding>();
+        baseBuilding.OnProductDelivered += OnDeliveryReceived;
     }
 
     private void Update()
@@ -51,12 +54,21 @@ public class BuildingRequestComponent : MonoBehaviour
 
         if (currentStock <= (capacityPerProduct * stockThreshold))
         {
-            CreateRequest(productData,  capacityPerProduct - currentStock); // 1 for now
+            if (!deliveringProducts.ContainsKey(productData))
+            {
+                deliveringProducts.Add(productData, capacityPerProduct - currentStock);
+                CreateRequest(productData,  capacityPerProduct - currentStock); // 1 for now
+            }
         }
     }
 
     void CreateRequest(ProductData productData, int amount)
     {
         Debug.Log($"Item Requested {productData} amount {amount}");
+    }
+
+    void OnDeliveryReceived(ProductData product, int amount)
+    {
+        deliveringProducts.Remove(product);
     }
 }

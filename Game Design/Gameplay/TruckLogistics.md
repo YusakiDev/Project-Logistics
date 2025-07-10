@@ -24,16 +24,40 @@ The logistics system is **demand-driven**: stores create requests when they need
 - **Capacity Settings:** Defined in BuildingType ScriptableObject
 - **Store vs Factory:** May have different input/output capacity limits
 
-## Mechanics
-- **Autonomous Movement:** Trucks follow built roads automatically.
-- **Attributes:** Each truck has speed, capacity, and upgradeable stats.
-- **Fleet Management:** Players can purchase new trucks and upgrade existing ones.
-- **Pickup/Delivery:** Trucks pick up goods at production nodes and deliver to the next destination.
+## Transport Control System (Automatic)
+
+### Design Philosophy: Simple Mobile Experience
+Inspired by Mini Metro and Mini Motorways, the transport system emphasizes **infrastructure optimization** over vehicle micromanagement.
+
+### Player Responsibilities
+- **Road Network:** Build and optimize road layouts for efficient transport
+- **Building Placement:** Strategic positioning of farms, factories, and stores
+- **Fleet Upgrades:** Purchase more trucks, upgrade speed/capacity globally
+- **Economic Management:** Balance road costs vs. transport efficiency
+
+### System Responsibilities
+- **Automatic Routing:** System finds optimal paths using available roads
+- **Request Fulfillment:** Trucks automatically assigned to transport requests
+- **Delivery Execution:** No manual "send truck A to building B" required
+- **Load Balancing:** System distributes trucks efficiently across active requests
+
+### Truck Mechanics
+- **Autonomous Operation:** Trucks automatically navigate road networks
+- **Global Fleet:** All trucks share capacity, no individual assignment
+- **Upgradeable Stats:** Speed, capacity, and count improvements affect entire fleet
+- **Smart Routing:** System chooses shortest/most efficient available paths
+
+### Strategic Depth
+- **Layout Optimization:** Efficient road networks reduce transport time and costs
+- **Capacity Planning:** Balance truck count vs. upgrade costs vs. demand
+- **Network Effects:** Better road connectivity improves overall system efficiency
+- **Economic Trade-offs:** Direct expensive routes vs. longer cheaper alternatives
 
 ## Mobile Considerations
-- Tap to select and upgrade trucks
-- Visual feedback for truck actions
-- Haptic feedback for upgrades or deliveries
+- **Simple Interface:** No complex truck assignment UI required
+- **Tap to Upgrade:** Global fleet improvements through simple upgrade menus
+- **Visual Feedback:** Clear indicators for transport efficiency and bottlenecks
+- **Intuitive Controls:** Focus on road building and building placement
 
 ## Implementation Priority
 1. **Transport Request System** - Foundation for all logistics

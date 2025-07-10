@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -53,6 +54,12 @@ namespace Scripts
         /// Used to detect changes in position and update related elements such as the stock display text.
         /// </summary>
         private Vector3 lastPosition;
+
+        /// <summary>
+        /// Event triggered when products are delivered to the building.
+        /// Provides the product type and amount delivered.
+        /// </summary>
+        public Action<ProductData, int> OnProductDelivered;
 
         #endregion
 
@@ -141,11 +148,13 @@ namespace Scripts
         /// <param name="amount">The amount to add</param>
         public void AddInputStock(ProductData product, int amount)
         {
+            OnProductDelivered.Invoke(product, amount);
             if (inputStock.ContainsKey(product))
                 inputStock[product] += amount;
             else
                 inputStock[product] = amount;
         }
+
         #endregion
     }
 }
