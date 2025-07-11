@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "mcp__todoist-integration__get-tasks-by-filter"
+      "mcp__todoist-integration__get-tasks-by-filter",
+      "Bash(git add:*)"
     ],
     "deny": []
   }
