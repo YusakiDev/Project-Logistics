@@ -11,8 +11,8 @@ namespace Scripts
         private float processingTimer = 0f;
         private float processingInterval = 3f;
 
-        public float timeToPickup;
-        public float timeToDeliver;
+        public float timeToPickup = 2f;
+        public float timeToDeliver = 5f;
 
         protected override void Start()
         {
