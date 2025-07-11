@@ -14,13 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Chicken Farm
   icon: {fileID: 4646649027328027380, guid: 8b455c057f7e309498e2cbf97c5f1cd3, type: 3}
-  prefab: {fileID: 0}
-  buildCost: 0
   outputProduct: {fileID: 11400000, guid: 519b13c2c38f6b54899208f0d508faa0, type: 2}
   outputAmount: 1
-  productionTime: 5
+  productionTime: 2
   inputStorageLimit: 10
   outputStorageLimit: 20
   inputProducts: []
+  storeStock: []
   size: {x: 1, y: 1}
   buildingRole: 0
