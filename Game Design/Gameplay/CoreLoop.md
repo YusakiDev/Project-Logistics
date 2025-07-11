@@ -13,13 +13,13 @@ The core gameplay loop of Farm Logistics Tycoon (Mobile) is designed for short, 
    - **Cost Management:** Each road tile costs money - players must choose routes carefully.
    - Upgrade trucks and expand fleet as money is earned from store sales.
 3. **Order Fulfillment:**
-   - Customers queue at the store with product requests and patience timers.
-   - Trucks automatically transport goods along built routes.
-   - Deliver goods before timers expire to earn points and stars.
+   - Customers arrive at stores at random intervals and consume available stock.
+   - Trucks automatically transport goods along built routes to restock stores.
+   - Maintain adequate stock levels to satisfy customer demand and avoid rating penalties.
 4. **Score & Progress:**
-   - Successful deliveries increase score and store rating.
+   - Successful customer service (stock available when customers arrive) increases store rating.
    - **Store Sales Generate Money:** Primary income source for road building.
-   - Failed/late deliveries reduce stars and score.
+   - Empty stock causing customers to leave reduces store rating and score.
    - Earnings can be reinvested in upgrades.
 5. **End of Round:**
    - When timer ends, player receives summary of performance.

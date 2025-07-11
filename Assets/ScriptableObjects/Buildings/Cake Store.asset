@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 47f31b7c8f02656429844ba47e984798, type: 3}
-  m_Name: Store
+  m_Name: Cake Store
   m_EditorClassIdentifier: 
-  displayName: Store 1
+  displayName: Cake Store
   icon: {fileID: -2604738364173635514, guid: 0c12098c2a7f0f3438c4646a372175c8, type: 3}
   outputProduct: {fileID: 0}
   outputAmount: 1
@@ -26,8 +26,6 @@ MonoBehaviour:
     amount: 1
   storeStock:
   - productData: {fileID: 11400000, guid: 291259c692c0e88439a0dca33b2c415f, type: 2}
-    amount: 100
-  - productData: {fileID: 11400000, guid: 519b13c2c38f6b54899208f0d508faa0, type: 2}
     amount: 100
   size: {x: 1, y: 1}
   buildingRole: 2

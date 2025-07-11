@@ -1,0 +1,1 @@
+D:\UnityProjects\Project Logistics\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\build\intermediates\cxx\Debug\5s4v3m2n\obj\armeabi-v7a
