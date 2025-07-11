@@ -1,100 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Scripts;
 using UnityEngine;
 
-public class BuildingRequestComponent : MonoBehaviour
+/// <summary>
+/// Handles stock monitoring and transport requests for production buildings (factories).
+/// Monitors inputStock levels and creates requests when input materials are running low.
+/// </summary>
+public class BuildingRequestComponent : BaseRequestComponent
 {
     /// <summary>
-    /// A boolean flag indicating whether the production time interval, defined in the associated
-    /// <see cref="BuildingData"/> of the building, should be used as the interval for checking stock
-    /// and production cycles. If set to <c>true</c>, the production time from the building's data will
-    /// be used. If <c>false</c>, a custom interval defined by <see cref="customCheckInterval"/> will be used.
+    /// Checks all input products that this building requires for production.
     /// </summary>
-    public bool useProductionTimeInterval = true;
-
-    /// <summary>
-    /// A custom interval, in seconds, used for checking stock and production cycles when
-    /// <see cref="useProductionTimeInterval"/> is set to <c>false</c>. This value is user-defined
-    /// and overrides the default production time interval from the building's associated
-    /// <see cref="BuildingData"/>.
-    /// </summary>
-    public float customCheckInterval = 7f;
-
-    /// <summary>
-    /// A floating-point value representing the stock level threshold at which new product delivery
-    /// requests are triggered for a building. Expressed as a fraction of the total input stock
-    /// capacity for a given product. For example, a value of <c>0.25</c> indicates that delivery
-    /// requests will be initiated when stock falls below 25% of the storage capacity for the product.
-    /// </summary>
-    public float stockThreshold = 0.25f;
-
-    /// <summary>
-    /// A dictionary mapping <see cref="ProductData"/> objects to their respective quantities that are currently
-    /// being delivered by the building. The key represents the type of product, and the value represents the
-    /// amount of that product being transported or prepared for delivery.
-    /// </summary>
-    Dictionary<ProductData, int> deliveringProducts = new();
-
-    private float checkTimer = 0f;
-    private BaseBuilding baseBuilding;
-
-    private void Start()
+    protected override void CheckAllProducts()
     {
-        baseBuilding = GetComponent<BaseBuilding>();
-        baseBuilding.OnProductDelivered += OnDeliveryReceived;
-    }
-
-    private void Update()
-    {
-        float intervalToUse = GetCheckInterval();
-        checkTimer += Time.deltaTime;
-
-
-        if (checkTimer >= intervalToUse) {
-            foreach (var product in baseBuilding.buildingData.inputProducts)
-            {
-                CheckProductStock(product.productData);
-            }
-            checkTimer = 0f;
+        foreach (var product in baseBuilding.buildingData.inputProducts)
+        {
+            CheckProductStock(product.productData);
         }
-
     }
 
-    float GetCheckInterval()
+    /// <summary>
+    /// Checks the stock level of a specific input product and creates a transport request if needed.
+    /// </summary>
+    /// <param name="productData">The input product to check stock for.</param>
+    protected override void CheckProductStock(ProductData productData)
     {
-        if (useProductionTimeInterval &&
-            baseBuilding.buildingData.productionTime > 0)
-            return baseBuilding.buildingData.productionTime;
-        else
-            return customCheckInterval;
-    }
-
-    void CheckProductStock(ProductData productData)
-    {
-        baseBuilding.inputStock.TryGetValue(productData,  out int currentStock);
-        int capacityPerProduct = baseBuilding.buildingData.inputStorageLimit
-                                 / baseBuilding.buildingData.inputProducts.Length;
+        int currentStock = GetCurrentStock(productData);
+        int capacityPerProduct = GetProductCapacity(productData);
 
         if (currentStock <= (capacityPerProduct * stockThreshold))
         {
             if (!deliveringProducts.ContainsKey(productData))
             {
-                deliveringProducts.Add(productData, capacityPerProduct - currentStock);
-                CreateRequest(productData,  capacityPerProduct - currentStock); // 1 for now
+                int amountToRequest = capacityPerProduct - currentStock;
+                TransportRequest request = CreateRequest(productData, amountToRequest);
+                deliveringProducts.Add(productData, request);
             }
         }
     }
 
-    void CreateRequest(ProductData productData, int amount)
+    /// <summary>
+    /// Gets the storage capacity for a specific input product.
+    /// Calculates capacity by dividing total input storage limit by number of input products.
+    /// </summary>
+    /// <param name="productData">The input product to get capacity for.</param>
+    /// <returns>The storage capacity for the specified input product.</returns>
+    protected override int GetProductCapacity(ProductData productData)
     {
-        TransportManager.Instance.AddRequest(new TransportRequest(baseBuilding, productData, amount));
-        Debug.Log($"Item Requested {productData} amount {amount}");
+        return baseBuilding.buildingData.inputStorageLimit / baseBuilding.buildingData.inputProducts.Length;
     }
 
-    void OnDeliveryReceived(ProductData product, int amount)
+    /// <summary>
+    /// Gets the current stock level for a specific input product from the building's input stock.
+    /// </summary>
+    /// <param name="productData">The input product to get current stock for.</param>
+    /// <returns>The current stock level for the specified input product.</returns>
+    protected override int GetCurrentStock(ProductData productData)
     {
-        deliveringProducts.Remove(product);
+        baseBuilding.inputStock.TryGetValue(productData, out int currentStock);
+        return currentStock;
     }
 }

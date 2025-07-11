@@ -1,7 +1,8 @@
+using Scripts;
 using UnityEngine;
 
 [ExecuteAlways]
-[RequireComponent(typeof(ProductionBuilding))]
+[RequireComponent(typeof(BaseBuilding))]
 public class BuildingGridAligner : MonoBehaviour
 {
     private Vector3 lastSnappedPosition;
@@ -19,7 +20,7 @@ public class BuildingGridAligner : MonoBehaviour
 
     private void SnapAndOffsetToGrid()
     {
-        var buildingInstance = GetComponent<ProductionBuilding>();
+        var buildingInstance = GetComponent<BaseBuilding>();
         if (buildingInstance == null || buildingInstance.buildingData == null)
             return;
 

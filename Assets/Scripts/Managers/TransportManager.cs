@@ -11,6 +11,9 @@ namespace Scripts
         private float processingTimer = 0f;
         private float processingInterval = 3f;
 
+        public float timeToPickup;
+        public float timeToDeliver;
+
         protected override void Start()
         {
             base.Start();
@@ -90,7 +93,7 @@ namespace Scripts
 
             ActiveDelivery delivery = new ActiveDelivery(DeliveryPhase.Pickup,
                 request, building, request.requestingBuilding,
-                request.requestingProduct, amount);
+                request.requestingProduct, amount, timeToPickup, timeToDeliver);
             activeDeliveries.Add(delivery);
         }
 
@@ -106,7 +109,7 @@ namespace Scripts
                     if (delivery.deliveryPhase == DeliveryPhase.Pickup)
                     {
                         delivery.deliveryPhase = DeliveryPhase.Delivery;
-                        delivery.timeRemaining = 10f;
+                        delivery.timeRemaining = timeToDeliver;
                         delivery.originalRequest.requestStatus = RequestStatus.Processing;
                         delivery.supplier.reservedStock[delivery.productData] -= delivery.amount;
                     }
@@ -124,9 +127,19 @@ namespace Scripts
 
         void CompleteDelivery(ActiveDelivery delivery)
         {
-            delivery.requester.inputStock[delivery.productData] += delivery.amount;
+            if (delivery.requester.buildingData.buildingRole == BuildingRole.Store)
+            {
+                // AddStoreStock will trigger OnProductDelivered event
+                ((Store) delivery.requester).AddStoreStock(delivery.productData, delivery.amount);
+            }
+            else if (delivery.requester.buildingData.buildingRole == BuildingRole.Factory)
+            {
+                delivery.requester.inputStock[delivery.productData] += delivery.amount;
+                // Trigger the delivery event to notify request components
+                delivery.requester.OnProductDelivered?.Invoke(delivery.productData, delivery.amount);
+            }
+            
             delivery.originalRequest.requestStatus = RequestStatus.Delivered;
-            Debug.Log("Delivery Completed");
         }
 
         private (BaseBuilding supplier, int availableAmount) FindSupplier(ProductData requestingProduct)
@@ -160,6 +173,14 @@ namespace Scripts
         public List<ActiveDelivery> GetActiveDeliveries()
         {
             return activeDeliveries;
+        }
+        
+        /// <summary>
+        /// Gets the current pending requests for debug UI purposes
+        /// </summary>
+        public List<TransportRequest> GetPendingRequests()
+        {
+            return pendingRequests;
         }
     }
 }

@@ -12,11 +12,11 @@ namespace Scripts
         public BaseBuilding requester;
         public ProductData productData;
         public int amount;
-        private float timeToPickup;
-        private float timeToDeliver;
+        public float timeToPickup;
+        public float timeToDeliver;
 
         public ActiveDelivery(DeliveryPhase deliveryPhase,TransportRequest originalRequest, BaseBuilding supplier, BaseBuilding requester,
-            ProductData productData, int amount)
+            ProductData productData, int amount, float timeToPickup, float timeToDeliver)
         {
             this.originalRequest = originalRequest;
             this.deliveryPhase = deliveryPhase;
@@ -24,16 +24,9 @@ namespace Scripts
             this.requester = requester;
             this.productData = productData;
             this.amount = amount;
-            this.timeToPickup = 5;
-            this.timeToDeliver = 10;
-            if (deliveryPhase == DeliveryPhase.Pickup)
-            {
-                timeRemaining = timeToPickup;
-            }
-            else if (deliveryPhase == DeliveryPhase.Delivery)
-            {
-                timeRemaining = timeToDeliver;
-            }
+            this.timeToPickup = timeToPickup;
+            this.timeToDeliver = timeToDeliver;
+            timeRemaining = timeToPickup;
         }
 
     }
