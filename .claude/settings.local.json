@@ -3,7 +3,9 @@
     "allow": [
       "mcp__todoist-integration__get-tasks-by-filter",
       "Bash(git add:*)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)"
     ],
     "deny": []
   }
